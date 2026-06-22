@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "SEO Toolkit",
+  "version": "2.3.0",
+  "description": "Профессиональный SEO-инструмент: парсер, аудит, защита от накрутки ПФ",
+  "update_url": "https://raw.githubusercontent.com/IvanBurovv/seo-toolkit/main/updates.xml",
+  
+  "permissions": [
+    "activeTab",
+    "storage",
+    "unlimitedStorage"
+  ],
+  
+  "host_permissions": [
+    "https://*/*",
+    "http://*/*",
+    "https://rdap.org/*",
+    "http://web.archive.org/*"
+  ],
+  
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  
+  "background": {
+    "service_worker": "background/service-worker.js"
+  }
+}

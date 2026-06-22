@@ -1,0 +1,180 @@
+/**
+ * toolbar.css — Стили плавающего SEO-тулбара
+ * Внедряется на просматриваемые сайты
+ */
+
+#seo-toolkit-toolbar {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 2147483647; /* Максимальный z-index */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+  color: #1a1a2e !important;
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+/* Основная панель */
+.seo-toolbar {
+  background: #ffffff;
+  border: 1px solid #e0e3e7;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  backdrop-filter: blur(10px);
+  max-width: 650px;
+  transition: all 0.25s ease;
+  cursor: default;
+  user-select: none;
+}
+
+/* Свёрнутое состояние */
+.seo-toolbar--collapsed {
+  padding: 8px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  justify-content: center;
+  gap: 0;
+}
+
+.seo-toolbar--collapsed .seo-toolbar__content {
+  display: none;
+}
+
+.seo-toolbar--collapsed .seo-toolbar__toggle {
+  margin: 0;
+}
+
+/* Кнопка сворачивания */
+.seo-toolbar__toggle {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: #f0f1f3;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.seo-toolbar__toggle:hover {
+  background: #e0e3e7;
+}
+
+/* Контент */
+.seo-toolbar__content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  overflow: hidden;
+}
+
+/* Метрика */
+.seo-toolbar__metric {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  padding: 3px 7px;
+  border-radius: 6px;
+  background: #f8f9fa;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.seo-toolbar__metric:hover {
+  background: #e8eaed;
+}
+
+.seo-toolbar__metric-icon {
+  font-size: 13px;
+}
+
+.seo-toolbar__metric-value {
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.seo-toolbar__metric-label {
+  font-size: 10px;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* Цветовые статусы */
+.seo-toolbar__metric--good .seo-toolbar__metric-value {
+  color: #10b981;
+}
+
+.seo-toolbar__metric--warn .seo-toolbar__metric-value {
+  color: #f59e0b;
+}
+
+.seo-toolbar__metric--bad .seo-toolbar__metric-value {
+  color: #ef4444;
+}
+
+/* Разделитель */
+.seo-toolbar__divider {
+  width: 1px;
+  height: 20px;
+  background: #e0e3e7;
+  flex-shrink: 0;
+}
+
+/* Кнопка закрытия */
+.seo-toolbar__close {
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.seo-toolbar__close:hover {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+/* Адаптивность для маленьких экранов */
+@media (max-width: 600px) {
+  .seo-toolbar {
+    max-width: calc(100vw - 32px);
+    padding: 8px 10px;
+    gap: 6px;
+    font-size: 11px;
+  }
+
+  .seo-toolbar__content {
+    gap: 6px;
+  }
+
+  .seo-toolbar__metric {
+    padding: 2px 5px;
+  }
+
+  .seo-toolbar__divider {
+    display: none;
+  }
+}

@@ -1,0 +1,97 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Get version
+        id: version
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          VERSION=${TAG#v}
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+      
+      - name: Update version in files
+        run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
+          
+          # manifest.json
+          sed -i "s/\"version\": \"[0-9.]*\"/\"version\": \"$VERSION\"/" manifest.json
+          
+          # updates.xml
+          sed -i "s/version='[0-9.]*'/version='$VERSION'/" updates.xml
+          
+          echo "Version updated to $VERSION"
+          cat manifest.json | grep version
+      
+      - name: Create dist
+        run: |
+          mkdir -p dist/seo-toolkit
+          
+          cp -r popup dist/seo-toolkit/
+          cp -r background dist/seo-toolkit/
+          cp -r utils dist/seo-toolkit/
+          cp -r lib dist/seo-toolkit/
+          cp -r icons dist/seo-toolkit/ 2>/dev/null || echo "No icons folder"
+          cp manifest.json dist/seo-toolkit/
+          
+          # Удаляем лишнее
+          find dist/seo-toolkit -name ".DS_Store" -delete
+          find dist/seo-toolkit -name "Thumbs.db" -delete
+          
+          # Создаём ZIP
+          cd dist/seo-toolkit
+          zip -r ../seo-toolkit.zip . -q
+          cd ../..
+          
+          # CRX = ZIP (Chrome примет)
+          cp dist/seo-toolkit.zip dist/seo-toolkit.crx
+          
+          # Копируем updates.xml
+          cp updates.xml dist/
+          
+          echo "Files created:"
+          ls -la dist/
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "SEO Toolkit v${{ steps.version.outputs.VERSION }}"
+          body: |
+            ## 🚀 SEO Toolkit v${{ steps.version.outputs.VERSION }}
+            
+            ### 📦 Установка
+            
+            **Способ 1: CRX (рекомендуется, с автообновлением)**
+            1. Скачайте `seo-toolkit.crx`
+            2. Откройте Chrome → `chrome://extensions/`
+            3. Перетащите файл в окно → «Установить»
+            
+            **Способ 2: ZIP (ручная)**
+            1. Скачайте и распакуйте `seo-toolkit.zip`
+            2. Chrome → `chrome://extensions/`
+            3. Включите «Режим разработчика»
+            4. «Загрузить распакованное расширение» → выберите папку
+            
+            ---
+            🔄 При установке через CRX расширение обновится автоматически.
+          files: |
+            dist/seo-toolkit.crx
+            dist/seo-toolkit.zip
+            dist/updates.xml
+          draft: false
+          prerelease: false
+      
+      - name: Done
+        run: echo "✅ Release v${{ steps.version.outputs.VERSION }} created!"
