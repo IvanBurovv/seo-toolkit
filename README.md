@@ -41,14 +41,3 @@
 1. `chrome://extensions/`
 2. Включить «Режим разработчика»
 3. «Обновить расширения»
-
-## 🛠 Разработка
-
-```bash
-# Клонировать
-git clone https://github.com/IvanBurovv/seo-toolkit.git
-
-# Выпустить новую версию
-git tag v2.4.0
-git push origin v2.4.0
-# GitHub Actions соберёт и создаст Release автоматически
