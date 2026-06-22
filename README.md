@@ -1,0 +1,54 @@
+# 🔧 SEO Toolkit
+
+[![Version](https://img.shields.io/badge/version-2.3.0-blue)](https://github.com/IvanBurovv/seo-toolkit/releases)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
+Профессиональный SEO-инструмент для Chrome. Парсинг структуры сайта, аудит страниц, защита от накрутки поведенческих факторов.
+
+## 📋 Возможности
+
+| Вкладка | Описание |
+|---------|----------|
+| 📊 **Парсер** | Сбор URL, Title, Description, H1. Экспорт в XLSX |
+| 📋 **Аудит** | SEO-проверка страницы: метатеги, заголовки, Open Graph |
+| 🛡️ **Анти-ПФ** | Проверка готовности сайта к ПФ + генерация защиты |
+| 📝 **ПФ-Генератор** | Создание TXT файла для запуска поведенческих факторов |
+
+## 🚀 Установка
+
+### Способ 1: CRX (рекомендуется)
+> С автообновлением — новые версии устанавливаются сами
+
+1. Скачайте [`seo-toolkit.crx`](https://github.com/IvanBurovv/seo-toolkit/releases/latest/download/seo-toolkit.crx)
+2. Откройте Chrome → `chrome://extensions/`
+3. **Перетащите** файл в окно
+4. Нажмите «Установить расширение»
+
+### Способ 2: ZIP (ручная)
+> Без автообновления — нужно обновлять вручную
+
+1. Скачайте [`seo-toolkit.zip`](https://github.com/IvanBurovv/seo-toolkit/releases/latest/download/seo-toolkit.zip)
+2. Распакуйте в любую папку
+3. Chrome → `chrome://extensions/`
+4. Включите **«Режим разработчика»**
+5. «Загрузить распакованное расширение» → выберите папку
+
+## 🔄 Обновления
+
+При установке через **CRX** расширение обновляется автоматически (Chrome проверяет раз в 5-24 часа).
+
+Чтобы обновить вручную:
+1. `chrome://extensions/`
+2. Включить «Режим разработчика»
+3. «Обновить расширения»
+
+## 🛠 Разработка
+
+```bash
+# Клонировать
+git clone https://github.com/IvanBurovv/seo-toolkit.git
+
+# Выпустить новую версию
+git tag v2.4.0
+git push origin v2.4.0
+# GitHub Actions соберёт и создаст Release автоматически
