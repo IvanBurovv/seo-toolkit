@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SEO Toolkit",
-  "version": "2.8.1",
+  "version": "2.8.2",
   "description": "Профессиональный SEO-инструмент: парсер, аудит, защита от накрутки ПФ",
   "update_url": "https://raw.githubusercontent.com/IvanBurovv/seo-toolkit/main/updates.xml",
   
