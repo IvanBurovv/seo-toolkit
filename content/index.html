@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SEO Toolkit — Расширение для Chrome</title>
+  <meta name="description" content="Профессиональный SEO-инструмент: парсер структуры, аудит страниц, защита от накрутки ПФ. Установка в 1 клик.">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f0f1a;
+      color: #e4e4e7;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    /* Градиентный фон */
+    .bg-gradient {
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 50%, rgba(37, 99, 235, 0.15) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                  radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.08) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* Шапка */
+    .header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    
+    .logo {
+      font-size: 64px;
+      margin-bottom: 16px;
+      display: block;
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    h1 {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #667eea, #764ba2, #4CAF50);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .subtitle {
+      font-size: 18px;
+      color: #a1a1aa;
+      line-height: 1.6;
+    }
+    
+    /* Карточка установки */
+    .install-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 40px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      margin-bottom: 30px;
+    }
+    
+    .install-card h2 {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    
+    .install-card .version-badge {
+      display: inline-block;
+      background: rgba(76,175,80,0.15);
+      color: #4CAF50;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 18px 48px;
+      border: none;
+      border-radius: 14px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s;
+      margin: 8px;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #4CAF50, #45a049);
+      color: white;
+      box-shadow: 0 8px 30px rgba(76,175,80,0.3);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(76,175,80,0.4);
+    }
+    
+    .btn-secondary {
+      background: rgba(255,255,255,0.08);
+      color: #e4e4e7;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.12);
+    }
+    
+    .btn-outline {
+      background: transparent;
+      color: #667eea;
+      border: 2px solid #667eea;
+    }
+    
+    .btn-outline:hover {
+      background: rgba(102,126,234,0.1);
+    }
+    
+    /* Инструкция */
+    .steps {
+      text-align: left;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin: 20px 0;
+    }
+    
+    .steps h3 {
+      font-size: 16px;
+      margin-bottom: 16px;
+      color: #a1a1aa;
+    }
+    
+    .step {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 14px;
+      align-items: flex-start;
+    }
+    
+    .step-number {
+      width: 30px;
+      height: 30px;
+      background: #667eea;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    
+    .step-text {
+      font-size: 14px;
+      color: #d4d4d8;
+      line-height: 1.5;
+      padding-top: 4px;
+    }
+    
+    .step-text code {
+      background: rgba(255,255,255,0.1);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #667eea;
+    }
+    
+    /* Возможности */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 40px 0;
+    }
+    
+    .feature {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    
+    .feature:hover {
+      transform: translateY(-2px);
+    }
+    
+    .feature-icon {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+    
+    .feature h4 {
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+    
+    .feature p {
+      font-size: 12px;
+      color: #a1a1aa;
+      line-height: 1.5;
+    }
+    
+    /* Футер */
+    .footer {
+      text-align: center;
+      margin-top: 60px;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    
+    .footer p {
+      font-size: 13px;
+      color: #71717a;
+    }
+    
+    .footer a {
+      color: #667eea;
+      text-decoration: none;
+    }
+    
+    /* Модальное окно */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-overlay.active {
+      display: flex;
+    }
+    
+    .modal {
+      background: #1a1a2e;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 450px;
+      text-align: center;
+    }
+    
+    .modal h3 {
+      margin-bottom: 12px;
+      font-size: 20px;
+    }
+    
+    .modal p {
+      color: #a1a1aa;
+      margin-bottom: 20px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    
+    /* Адаптив */
+    @media (max-width: 600px) {
+      .container { padding: 20px 16px; }
+      h1 { font-size: 28px; }
+      .install-card { padding: 24px; }
+      .btn { padding: 14px 32px; font-size: 16px; display: block; }
+      .features { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-gradient"></div>
+  
+  <div class="container">
+    <!-- Шапка -->
+    <header class="header">
+      <span class="logo">🔧</span>
+      <h1>SEO Toolkit</h1>
+      <p class="subtitle">Профессиональное расширение для Chrome<br>Парсер • Аудит • Защита от накрутки ПФ • Генератор TXT</p>
+    </header>
+    
+    <!-- Карточка установки -->
+    <div class="install-card">
+      <h2>⚡ Установка в 1 клик</h2>
+      <div class="version-badge">v2.4.0 • Автообновление</div>
+      
+      <a href="https://github.com/IvanBurovv/seo-toolkit/releases/latest/download/seo-toolkit.crx" 
+         class="btn btn-primary"
+         onclick="handleInstall(event)">
+        🚀 Установить расширение
+      </a>
+      
+      <div class="steps" id="installSteps" style="display:none;">
+        <h3>📋 Не устанавливается? Сделайте так:</h3>
+        <div class="step">
+          <span class="step-number">1</span>
+          <span class="step-text">Файл уже скачан. Откройте <code>chrome://extensions/</code></span>
+        </div>
+        <div class="step">
+          <span class="step-number">2</span>
+          <span class="step-text">Включите <strong>«Режим разработчика»</strong> (тумблер справа вверху)</span>
+        </div>
+        <div class="step">
+          <span class="step-number">3</span>
+          <span class="step-text">Перетащите файл <code>seo-toolkit.crx</code> в окно браузера</span>
+        </div>
+        <div class="step">
+          <span class="step-number">4</span>
+          <span class="step-text">Нажмите <strong>«Установить расширение»</strong></span>
+        </div>
+      </div>
+      
+      <div style="margin-top:20px;">
+        <a href="https://github.com/IvanBurovv/seo-toolkit/releases/latest/download/seo-toolkit.zip" 
+           class="btn btn-secondary">
+          📦 Скачать ZIP
+        </a>
+        <a href="https://github.com/IvanBurovv/seo-toolkit/releases/latest/download/install.bat" 
+           class="btn btn-outline">
+          💻 Установка для Windows (.bat)
+        </a>
+      </div>
+    </div>
+    
+    <!-- Возможности -->
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">📊</div>
+        <h4>Парсер структуры</h4>
+        <p>Сбор URL, Title, Description, H1. Экспорт в Excel</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📋</div>
+        <h4>SEO-аудит</h4>
+        <p>Проверка метатегов, заголовков, Open Graph</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🛡️</div>
+        <h4>Анти-ПФ</h4>
+        <p>Проверка готовности сайта к ПФ и защита от ботов</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📝</div>
+        <h4>ПФ-Генератор</h4>
+        <p>Создание TXT для запуска поведенческих факторов</p>
+      </div>
+    </div>
+    
+    <!-- Футер -->
+    <footer class="footer">
+      <p>
+        <a href="https://github.com/IvanBurovv/seo-toolkit">GitHub</a> • 
+        Версия 2.4.0 • 
+        При установке расширение обновляется автоматически
+      </p>
+    </footer>
+  </div>
+  
+  <!-- Модалка -->
+  <div class="modal-overlay" id="installModal">
+    <div class="modal">
+      <h3>📥 Файл скачан!</h3>
+      <p>Откройте <code>chrome://extensions/</code><br>и перетащите файл в окно браузера</p>
+      <button class="btn btn-primary" onclick="document.getElementById('installModal').classList.remove('active')">
+        Понятно
+      </button>
+    </div>
+  </div>
+
+  <script>
+    function handleInstall(e) {
+      // Показываем инструкцию
+      document.getElementById('installSteps').style.display = 'block';
+      
+      // Показываем модалку через 2 секунды
+      setTimeout(() => {
+        document.getElementById('installModal').classList.add('active');
+      }, 2000);
+    }
+    
+    // Закрытие модалки по клику вне
+    document.getElementById('installModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.classList.remove('active');
+      }
+    });
+  </script>
+</body>
+</html>
