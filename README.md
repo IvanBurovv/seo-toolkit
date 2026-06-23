@@ -16,7 +16,7 @@
 
 ## 🚀 Установка
 
-### Способ 1: .bar (рекомендуется)
+### Способ 1: .bat (рекомендуется)
 > С автообновлением — новые версии устанавливаются сами
 
 1. Скачайте [`seo-toolkit.crx`](https://github.com/IvanBurovv/seo-toolkit/releases/latest/download/seo-toolkit.bat)
