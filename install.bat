@@ -32,7 +32,7 @@ if not exist "%USERPROFILE%\Desktop\SEO-Toolkit\manifest.json" (
 explorer "%USERPROFILE%\Desktop\SEO-Toolkit"
 
 :: Открываем страницу расширений Chrome
-start chrome --new-window "chrome://extensions/"
+start "" cmd /c "start chrome chrome://extensions/"
 
 del "%TEMP%\seo-toolkit.zip" 2>nul
 
