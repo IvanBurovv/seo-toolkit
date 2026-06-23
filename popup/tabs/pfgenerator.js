@@ -11,12 +11,49 @@ class PFGeneratorTab {
   init() {
     this.app.updateStatus('📝 ПФ-Генератор готов');
     this.attachEventListeners();
+    this.loadWordstatQueries();
   }
 
   attachEventListeners() {
     document.getElementById('pf-generate-txt-btn')?.addEventListener('click', () => this.generateTxt());
     document.getElementById('pf-download-txt-btn')?.addEventListener('click', () => this.downloadTxt());
     document.getElementById('pf-copy-txt-btn')?.addEventListener('click', () => this.copyTxt());
+    
+    // Кнопка загрузки из WordStat
+    const loadBtn = document.getElementById('pf-load-wordstat-btn');
+    if (loadBtn) {
+      loadBtn.addEventListener('click', () => this.loadWordstatQueries());
+    }
+  }
+
+  // Загружаем запросы, собранные в WordStat
+  loadWordstatQueries() {
+    chrome.storage.local.get(['wordstat_queries'], (result) => {
+      const queries = result.wordstat_queries || [];
+      
+      if (queries.length === 0) {
+        this.app.updateStatus('ℹ️ Нет сохранённых запросов. Откройте WordStat и нажимайте 📋', false);
+        return;
+      }
+      
+      const textarea = document.getElementById('pf-queries-input');
+      if (textarea) {
+        // Убираем пробелы из частот (486 361 → 486361)
+        const cleaned = queries.map(q => {
+          const parts = q.split('\t');
+          if (parts.length === 2) {
+            return parts[0] + '\t' + parts[1].replace(/\s/g, '');
+          }
+          return q.replace(/\s+/g, '\t').replace(/\t(\d)\s+(\d)/g, '\t$1$2');
+        });
+        
+        textarea.value = cleaned.join('\n');
+        this.app.updateStatus(`✅ Загружено ${queries.length} запросов из WordStat`, false);
+      }
+      
+      // Очищаем хранилище после загрузки
+      chrome.storage.local.set({ wordstat_queries: [] });
+    });
   }
 
   generateTxt() {
@@ -26,7 +63,7 @@ class PFGeneratorTab {
     const filename = document.getElementById('pf-filename-input')?.value.trim() || 'pf_queries';
 
     if (!queriesText) {
-      this.app.updateStatus('❌ Вставьте список запросов', true);
+      this.app.updateStatus('❌ Вставьте список запросов или соберите их в WordStat', true);
       return;
     }
 
@@ -43,16 +80,14 @@ class PFGeneratorTab {
       let query, frequency;
 
       if (line.includes('\t')) {
-        // Табуляция
         const parts = line.split('\t');
         query = parts[0].trim();
-        frequency = parseInt(parts[parts.length - 1].trim()) || 0;
+        frequency = parseInt(parts[parts.length - 1].trim().replace(/\s/g, '')) || 0;
       } else {
-        // Пробел: ищем последнее число
-        const match = line.match(/^(.*?)\s+(\d+)\s*$/);
+        const match = line.match(/^(.*?)\s+(\d[\d\s]*)$/);
         if (match) {
           query = match[1].trim();
-          frequency = parseInt(match[2]) || 0;
+          frequency = parseInt(match[2].replace(/\s/g, '')) || 0;
         } else {
           query = line.trim();
           frequency = 0;
@@ -66,11 +101,10 @@ class PFGeneratorTab {
     }
 
     if (parsed.length === 0) {
-      this.app.updateStatus('❌ Не удалось распарсить запросы. Проверьте формат.', true);
+      this.app.updateStatus('❌ Не удалось распарсить запросы', true);
       return;
     }
 
-    // Формируем TXT
     const cleanDomain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
     const txtLines = parsed.map(item =>
       `${cleanDomain};${item.query};${item.dailyFrequency};&lr=${geo}`
@@ -79,7 +113,6 @@ class PFGeneratorTab {
     this.generatedTxt = txtLines.join('\n');
     this.generatedFilename = filename;
 
-    // Показываем результат
     document.getElementById('pf-txt-result').style.display = 'block';
     const preview = txtLines.slice(0, 10).join('\n');
     document.getElementById('pf-txt-preview').value = preview + (txtLines.length > 10 ? '\n...' : '');
@@ -109,9 +142,9 @@ class PFGeneratorTab {
       return;
     }
     navigator.clipboard.writeText(this.generatedTxt).then(() => {
-      this.app.updateStatus('📋 Скопировано в буфер');
+      this.app.updateStatus('📋 Скопировано');
     }).catch(() => {
-      this.app.updateStatus('❌ Ошибка копирования', true);
+      this.app.updateStatus('❌ Ошибка', true);
     });
   }
 

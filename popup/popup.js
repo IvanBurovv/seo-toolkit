@@ -21,6 +21,15 @@ const App = {
     this.bindHeaderButtons();
     this.bindGlobalEvents();
     await this.getCurrentTabUrl();
+    
+    // Восстанавливаем последнюю вкладку
+    try {
+      const data = await chrome.storage.local.get('activeTab');
+      if (data.activeTab) {
+        this.switchTab(data.activeTab);
+      }
+    } catch(e) {}
+    
     this.updateStatus('🟢 Готов к работе');
   },
 
@@ -79,8 +88,9 @@ const App = {
     });
   },
 
-  switchTab(tabName) {
-    // Очищаем предыдущую вкладку если нужно
+// popup/popup.js — исправленный switchTab
+switchTab(tabName) {
+    // Очищаем предыдущую вкладку
     if (this.state.activeTab === 'antipf' && window.antiPFTabInstance) {
       window.antiPFTabInstance.destroy();
     }
@@ -88,19 +98,19 @@ const App = {
       window.pfGeneratorInstance.destroy();
     }
 
-    // Обновляем кнопки вкладок
+    // Обновляем кнопки
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab--active'));
     const activeTab = document.querySelector(`.tab[data-tab="${tabName}"]`);
     if (activeTab) activeTab.classList.add('tab--active');
 
-    // Обновляем контент
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('tab-content--active'));
+    // Обновляем контент БЕЗ скрытия других вкладок
+    document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
     const activeContent = document.getElementById(`tab-${tabName}`);
-    if (activeContent) activeContent.classList.add('tab-content--active');
+    if (activeContent) activeContent.style.display = 'block';
 
     this.state.activeTab = tabName;
 
-    // Инициализация специфичных вкладок при открытии
+    // Инициализация вкладки при открытии
     if (tabName === 'audit') {
       this.updateAuditTabUrl();
     }
@@ -116,6 +126,11 @@ const App = {
       }
       window.pfGeneratorInstance.init();
     }
+    
+    // Сохраняем активную вкладку
+    try {
+      chrome.storage.local.set({ activeTab: tabName });
+    } catch(e) {}
   },
 
   // Кнопки в шапке

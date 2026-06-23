@@ -270,8 +270,16 @@
 
           <div class="field">
             <label class="field__label">Список запросов (запрос | частота)</label>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <span class="field__hint">Вставьте вручную или соберите в WordStat</span>
+              <button class="btn btn--secondary btn--sm" id="pf-load-wordstat-btn">
+                📥 Загрузить из WordStat
+              </button>
+            </div>
             <textarea id="pf-queries-input" class="field__textarea" rows="10"
-              placeholder="Вставьте запрос + частотность запроса"></textarea>
+              placeholder="плитка купить	486361
+тротуарная плитка	163411
+керамическая плитка	26455"></textarea>
             <span class="field__hint" style="margin-top:4px;">
               Формат: <strong>запрос</strong> TAB <strong>частота</strong>. Частота = показы в месяц по WordStat. Разделитель — табуляция или пробел.
             </span>

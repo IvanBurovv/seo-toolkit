@@ -25,15 +25,16 @@ jobs:
       - name: Update version in files
         run: |
           VERSION="${{ steps.version.outputs.VERSION }}"
-          
-          # manifest.json
           sed -i "s/\"version\": \"[0-9.]*\"/\"version\": \"$VERSION\"/" manifest.json
-          
-          # updates.xml
           sed -i "s/version='[0-9.]*'/version='$VERSION'/" updates.xml
           
-          echo "Version updated to $VERSION"
-          cat manifest.json | grep version
+          # Обновляем версию в index.html
+          sed -i "s/v[0-9.]* \•/v$VERSION \•/g" index.html
+          
+          # Обновляем версию в install.bat
+          sed -i "s/\"version\" \".*\"/\"version\" \"$VERSION\"/" install.bat
+          
+          echo "✅ Updated to version $VERSION"
       
       - name: Create dist
         run: |
@@ -43,14 +44,15 @@ jobs:
           cp -r background dist/seo-toolkit/
           cp -r utils dist/seo-toolkit/
           cp -r lib dist/seo-toolkit/
-          cp -r icons dist/seo-toolkit/ 2>/dev/null || echo "No icons folder"
+          cp -r icons dist/seo-toolkit/ 2>/dev/null || echo "No icons"
+          cp -r content dist/seo-toolkit/ 2>/dev/null || echo "No content"
           cp manifest.json dist/seo-toolkit/
+          cp updates.xml dist/seo-toolkit/
           
-          # Удаляем лишнее
           find dist/seo-toolkit -name ".DS_Store" -delete
           find dist/seo-toolkit -name "Thumbs.db" -delete
           
-          # Создаём ZIP
+          # ZIP
           cd dist/seo-toolkit
           zip -r ../seo-toolkit.zip . -q
           cd ../..
@@ -58,10 +60,13 @@ jobs:
           # CRX = ZIP (Chrome примет)
           cp dist/seo-toolkit.zip dist/seo-toolkit.crx
           
-          # Копируем updates.xml
-          cp updates.xml dist/
+          # Копируем install.bat
+          cp install.bat dist/
           
-          echo "Files created:"
+          # Копируем index.html
+          cp index.html dist/
+          
+          echo "Files:"
           ls -la dist/
       
       - name: Create Release
@@ -71,27 +76,30 @@ jobs:
           body: |
             ## 🚀 SEO Toolkit v${{ steps.version.outputs.VERSION }}
             
-            ### 📦 Установка
+            ### 📦 Установка (1 клик)
             
-            **Способ 1: CRX (рекомендуется, с автообновлением)**
-            1. Скачайте `seo-toolkit.crx`
-            2. Откройте Chrome → `chrome://extensions/`
-            3. Перетащите файл в окно → «Установить»
+            **🌐 Скачать с сайта:** [seo-toolkit.ru](https://seo-toolkit.ru)
             
-            **Способ 2: ZIP (ручная)**
-            1. Скачайте и распакуйте `seo-toolkit.zip`
-            2. Chrome → `chrome://extensions/`
-            3. Включите «Режим разработчика»
-            4. «Загрузить распакованное расширение» → выберите папку
+            **💻 Windows:** Скачайте `install.bat` и запустите — расширение установится автоматически.
+            
+            **📦 Вручную:**
+            - `seo-toolkit.crx` — перетащите в chrome://extensions/
+            - `seo-toolkit.zip` — распакуйте и загрузите в режиме разработчика
             
             ---
-            🔄 При установке через CRX расширение обновится автоматически.
+            🔄 Автообновление включено (только для CRX-установки)
           files: |
             dist/seo-toolkit.crx
             dist/seo-toolkit.zip
-            dist/updates.xml
+            dist/install.bat
+            dist/index.html
           draft: false
           prerelease: false
       
-      - name: Done
-        run: echo "✅ Release v${{ steps.version.outputs.VERSION }} created!"
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: gh-pages
+          keep_files: false
