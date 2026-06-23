@@ -46,28 +46,20 @@ jobs:
           cp -r lib dist/seo-toolkit/
           cp -r icons dist/seo-toolkit/ 2>/dev/null || echo "No icons"
           cp -r content dist/seo-toolkit/ 2>/dev/null || echo "No content"
+          cp -r img dist/seo-toolkit/ 2>/dev/null || echo "No img"
           cp manifest.json dist/seo-toolkit/
-          cp updates.xml dist/seo-toolkit/
           
           find dist/seo-toolkit -name ".DS_Store" -delete
           find dist/seo-toolkit -name "Thumbs.db" -delete
           
-          # ZIP
           cd dist/seo-toolkit
           zip -r ../seo-toolkit.zip . -q
           cd ../..
           
-          # CRX = ZIP (Chrome примет)
-          cp dist/seo-toolkit.zip dist/seo-toolkit.crx
-          
-          # Копируем install.bat
-          cp install.bat dist/
-          
-          # Копируем index.html
-          cp index.html dist/
-          
-          echo "Files:"
-          ls -la dist/
+          echo "Files in dist/seo-toolkit:"
+          ls -la dist/seo-toolkit/
+          echo "IMG folder:"
+          ls -la dist/seo-toolkit/img/ 2>/dev/null || echo "NO IMG FOLDER"
       
       - name: Create Release
         uses: softprops/action-gh-release@v2
@@ -83,13 +75,11 @@ jobs:
             **💻 Windows:** Скачайте `install.bat` и запустите — расширение установится автоматически.
             
             **📦 Вручную:**
-            - `seo-toolkit.crx` — перетащите в chrome://extensions/
             - `seo-toolkit.zip` — распакуйте и загрузите в режиме разработчика
             
             ---
             🔄 Автообновление включено (только для CRX-установки)
           files: |
-            dist/seo-toolkit.crx
             dist/seo-toolkit.zip
             dist/install.bat
             dist/index.html
