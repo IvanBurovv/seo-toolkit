@@ -43,6 +43,9 @@ jobs:
           cp -r icons dist/seo-toolkit/ 2>/dev/null || echo "No icons"
           cp manifest.json dist/seo-toolkit/
           
+          # Копируем install.bat отдельно в dist (для релиза)
+          cp install.bat dist/ 2>/dev/null || echo "No install.bat"
+          
           find dist/seo-toolkit -name ".DS_Store" -delete
           find dist/seo-toolkit -name "Thumbs.db" -delete
           
@@ -52,8 +55,8 @@ jobs:
           
           echo "=== dist contents ==="
           ls -la dist/
-          echo "=== IMG check ==="
-          ls -la dist/seo-toolkit/img/ 2>/dev/null || echo "NO IMG"
+          echo "=== install.bat check ==="
+          ls -la dist/install.bat 2>/dev/null || echo "NO BAT FILE"
       
       - name: Create Release
         uses: softprops/action-gh-release@v2
