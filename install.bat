@@ -4,46 +4,49 @@ color 0A
 echo.
 echo    ==========================================
 echo         SEO Toolkit - Installation
-echo         Professional SEO Tool for Chrome
 echo    ==========================================
 echo.
-echo    [1/3] Downloading latest version...
+echo    Downloading...
 
-powershell -Command "& {[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://github.com/IvanBurovv/seo-toolkit/releases/latest/download/seo-toolkit.zip' -OutFile '%TEMP%\seo-toolkit.zip'}" 2>nul
+powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri 'https://github.com/IvanBurovv/seo-toolkit/releases/latest/download/seo-toolkit.zip' -OutFile '%TEMP%\seo-toolkit.zip'"
 
 if not exist "%TEMP%\seo-toolkit.zip" (
-    echo    ERROR: Download failed. Check internet connection.
+    echo    ERROR: Download failed
     pause
     exit /b
 )
 
-echo    [2/3] Extracting to %USERPROFILE%\seo-toolkit...
+echo    Extracting to Desktop\SEO-Toolkit...
 
-if exist "%USERPROFILE%\seo-toolkit" rmdir /s /q "%USERPROFILE%\seo-toolkit" 2>nul
-powershell -Command "Expand-Archive -Path '%TEMP%\seo-toolkit.zip' -DestinationPath '%USERPROFILE%\seo-toolkit' -Force" 2>nul
+:: Распаковываем на рабочий стол
+if exist "%USERPROFILE%\Desktop\SEO-Toolkit" rmdir /s /q "%USERPROFILE%\Desktop\SEO-Toolkit" 2>nul
+powershell -Command "Expand-Archive -Path '%TEMP%\seo-toolkit.zip' -DestinationPath '%USERPROFILE%\Desktop\SEO-Toolkit' -Force"
 
-if not exist "%USERPROFILE%\seo-toolkit\manifest.json" (
-    echo    ERROR: Extraction failed.
+if not exist "%USERPROFILE%\Desktop\SEO-Toolkit\manifest.json" (
+    echo    ERROR: Install failed
     pause
     exit /b
 )
 
-echo    [3/3] Registering extension in Chrome...
+:: Открываем папку с расширением
+explorer "%USERPROFILE%\Desktop\SEO-Toolkit"
 
-reg add "HKCU\Software\Google\Chrome\Extensions\cnpbdfmknbdnidnniigkechacbokepha" /v "update_url" /t REG_SZ /d "https://raw.githubusercontent.com/IvanBurovv/seo-toolkit/main/updates.xml" /f >nul 2>&1
-reg add "HKCU\Software\Google\Chrome\Extensions\cnpbdfmknbdnidnniigkechacbokepha" /v "version" /t REG_SZ /d "2.5.0" /f >nul 2>&1
+:: Открываем страницу расширений Chrome
+start chrome --new-window "chrome://extensions/"
 
 del "%TEMP%\seo-toolkit.zip" 2>nul
 
 echo.
 echo    ==========================================
-echo         INSTALLATION COMPLETE!
+echo         ALMOST DONE!
 echo    ==========================================
 echo.
-echo    Restart Chrome (close and reopen)
-echo    Extension will appear in top-right corner
-echo    Click "Enable extension" when prompted
+echo    1. Enable "Developer mode" (top right)
+echo    2. Drag the folder "SEO-Toolkit"
+echo       from Desktop into Chrome window
+echo    3. Or click "Load unpacked" and
+echo       select the SEO-Toolkit folder
 echo.
-echo    Updates will install automatically!
+echo    The folder is on your Desktop.
 echo.
 pause

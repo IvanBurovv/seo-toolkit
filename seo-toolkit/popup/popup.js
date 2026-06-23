@@ -21,6 +21,7 @@ const App = {
     this.bindHeaderButtons();
     this.bindGlobalEvents();
     await this.getCurrentTabUrl();
+    this.loadBanner(); // ← добавить
     
     // Восстанавливаем последнюю вкладку
     try {
@@ -86,6 +87,19 @@ const App = {
         this.switchTab(tabName);
       });
     });
+  },
+  
+  // Загрузка баннера
+  async loadBanner() {
+    try {
+      // Проверяем, не хочет ли пользователь скрыть баннер
+      const data = await chrome.storage.local.get('hide_banner');
+      const banner = document.getElementById('banner');
+      
+      if (data.hide_banner && banner) {
+        banner.style.display = 'none';
+      }
+    } catch (e) {}
   },
 
 // popup/popup.js — исправленный switchTab
