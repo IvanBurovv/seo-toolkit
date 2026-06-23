@@ -16,27 +16,37 @@ if not exist "%TEMP%\seo-toolkit.zip" (
     exit /b
 )
 
-echo    Installing...
+echo    Extracting to Desktop\SEO-Toolkit...
 
-if exist "%USERPROFILE%\seo-toolkit" rmdir /s /q "%USERPROFILE%\seo-toolkit" 2>nul
+:: Распаковываем на рабочий стол
+if exist "%USERPROFILE%\Desktop\SEO-Toolkit" rmdir /s /q "%USERPROFILE%\Desktop\SEO-Toolkit" 2>nul
+powershell -Command "Expand-Archive -Path '%TEMP%\seo-toolkit.zip' -DestinationPath '%USERPROFILE%\Desktop\SEO-Toolkit' -Force"
 
-powershell -Command "Expand-Archive -Path '%TEMP%\seo-toolkit.zip' -DestinationPath '%USERPROFILE%\seo-toolkit' -Force"
-
-if not exist "%USERPROFILE%\seo-toolkit\manifest.json" (
+if not exist "%USERPROFILE%\Desktop\SEO-Toolkit\manifest.json" (
     echo    ERROR: Install failed
     pause
     exit /b
 )
 
-echo    Registering...
+:: Открываем папку с расширением
+explorer "%USERPROFILE%\Desktop\SEO-Toolkit"
 
-reg add "HKCU\Software\Google\Chrome\Extensions\cnpbdfmknbdnidnniigkechacbokepha" /v "update_url" /t REG_SZ /d "https://raw.githubusercontent.com/IvanBurovv/seo-toolkit/main/updates.xml" /f >nul 2>&1
+:: Открываем страницу расширений Chrome
+start chrome --new-window "chrome://extensions/"
 
 del "%TEMP%\seo-toolkit.zip" 2>nul
 
 echo.
 echo    ==========================================
-echo         DONE! Restart Chrome.
+echo         ALMOST DONE!
 echo    ==========================================
+echo.
+echo    1. Enable "Developer mode" (top right)
+echo    2. Drag the folder "SEO-Toolkit"
+echo       from Desktop into Chrome window
+echo    3. Or click "Load unpacked" and
+echo       select the SEO-Toolkit folder
+echo.
+echo    The folder is on your Desktop.
 echo.
 pause
