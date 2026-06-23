@@ -16,9 +16,8 @@ if not exist "%TEMP%\seo-toolkit.zip" (
     exit /b
 )
 
-echo    Extracting to Desktop\SEO-Toolkit...
+echo    Extracting to Desktop...
 
-:: Распаковываем на рабочий стол
 if exist "%USERPROFILE%\Desktop\SEO-Toolkit" rmdir /s /q "%USERPROFILE%\Desktop\SEO-Toolkit" 2>nul
 powershell -Command "Expand-Archive -Path '%TEMP%\seo-toolkit.zip' -DestinationPath '%USERPROFILE%\Desktop\SEO-Toolkit' -Force"
 
@@ -28,25 +27,17 @@ if not exist "%USERPROFILE%\Desktop\SEO-Toolkit\manifest.json" (
     exit /b
 )
 
-:: Открываем папку с расширением
-explorer "%USERPROFILE%\Desktop\SEO-Toolkit"
-
-:: Открываем страницу расширений Chrome
-start "" cmd /c "start chrome chrome://extensions/"
-
 del "%TEMP%\seo-toolkit.zip" 2>nul
 
+echo    Opening website with instructions...
+start "" https://instrumenty-marketologa.ru
+
 echo.
 echo    ==========================================
-echo         ALMOST DONE!
+echo         DONE!
 echo    ==========================================
 echo.
-echo    1. Enable "Developer mode" (top right)
-echo    2. Drag the folder "SEO-Toolkit"
-echo       from Desktop into Chrome window
-echo    3. Or click "Load unpacked" and
-echo       select the SEO-Toolkit folder
-echo.
-echo    The folder is on your Desktop.
+echo    Folder "SEO-Toolkit" is on your Desktop.
+echo    Website opened with install guide.
 echo.
 pause
