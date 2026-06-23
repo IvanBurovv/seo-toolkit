@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SEO Toolkit</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app">
+    <!-- Шапка -->
+    <header class="header">
+      <div class="header__logo">
+        <svg class="header__icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span class="header__title">SEO Toolkit</span>
+      </div>
+      <div class="header__actions">
+        <button class="header__btn" id="btnSettings" title="Настройки">⚙</button>
+        <button class="header__btn" id="btnTheme" title="Тёмная тема">🌙</button>
+        <button class="header__btn" id="btnHelp" title="Справка">?</button>
+      </div>
+    </header>
+
+    <!-- Вкладки -->
+    <nav class="tabs">
+      <button class="tab tab--active" data-tab="parser">
+        <span class="tab__icon">📊</span>
+        <span class="tab__label">Парсер</span>
+      </button>
+      <button class="tab" data-tab="audit">
+        <span class="tab__icon">📋</span>
+        <span class="tab__label">Аудит</span>
+      </button>
+      <button class="tab" data-tab="antipf">
+        <span class="tab__icon">🛡️</span>
+        <span class="tab__label">Анти-ПФ</span>
+      </button>
+      <button class="tab" data-tab="pfgenerator">
+        <span class="tab__icon">📝</span>
+        <span class="tab__label">ПФ-Генератор</span>
+      </button>
+    </nav>
+
+    <!-- Контент вкладок -->
+    <main class="content">
+      
+      <!-- Вкладка 1: Парсер -->
+      <section class="tab-content tab-content--active" id="tab-parser">
+        <div class="card">
+          <div class="field">
+            <label class="field__label" for="parserDomain">Домен для сканирования</label>
+            <div class="field__row">
+              <input type="url" id="parserDomain" class="field__input" placeholder="https://www.example.com"
+                list="domainsHistory" autocomplete="off">
+              <datalist id="domainsHistory"></datalist>
+              <button class="field__btn field__btn--primary" id="btnStartScan" title="Начать сканирование">▶</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field__label">Источник сканирования</label>
+            <div class="radio-group">
+              <label class="radio"><input type="radio" name="scanSource" value="sitemap" checked><span class="radio__mark"></span>Sitemap.xml</label>
+              <label class="radio"><input type="radio" name="scanSource" value="crawl"><span class="radio__mark"></span>Краул по ссылкам</label>
+              <label class="radio"><input type="radio" name="scanSource" value="upload"><span class="radio__mark"></span>Загрузить CSV/TXT</label>
+            </div>
+            <input type="file" id="uploadUrlsFile" class="field__file" accept=".csv,.txt" style="display:none;">
+          </div>
+
+          <div class="field">
+            <label class="field__label">Фильтры</label>
+            <div class="checkbox-group">
+              <label class="checkbox"><input type="checkbox" id="filter404" checked><span class="checkbox__mark"></span>Пропускать 404 и редиректы</label>
+              <label class="checkbox"><input type="checkbox" id="filterNoindex" checked><span class="checkbox__mark"></span>Только индексируемые (без noindex)</label>
+            </div>
+            <div class="field__row field__row--mt">
+              <input type="text" id="filterPath" class="field__input" placeholder="Только раздел (например: /projects)">
+            </div>
+          </div>
+
+          <div class="progress" id="scanProgress" style="display:none;">
+            <div class="progress__info">
+              <span class="progress__text" id="progressText">Сканирование...</span>
+              <span class="progress__count" id="progressCount">0/0</span>
+            </div>
+            <div class="progress__bar">
+              <div class="progress__fill" id="progressFill" style="width:0%"></div>
+            </div>
+            <div class="progress__stats">
+              <span class="progress__stat progress__stat--success">✅ Найдено: <strong id="statFound">0</strong></span>
+              <span class="progress__stat progress__stat--error">❌ Ошибок: <strong id="statErrors">0</strong></span>
+            </div>
+          </div>
+
+          <div class="results" id="scanResults" style="display:none;">
+            <div class="results__header">
+              <span class="results__title">Результаты сканирования</span>
+              <span class="results__total" id="resultsTotal"></span>
+            </div>
+            <div class="table-wrapper">
+              <table class="table" id="resultsTable">
+                <thead><tr><th>#</th><th>URL</th><th>Title</th><th>Status</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="warnings" id="scanWarnings" style="display:none;"></div>
+
+          <div class="actions" id="scanActions" style="display:none;">
+            <button class="btn btn--primary" id="btnDownloadXlsx">📥 Скачать XLSX</button>
+            <button class="btn btn--secondary" id="btnCopyResults">📋 Копировать</button>
+            <button class="btn btn--secondary" id="btnDetailView">🔍 Детально</button>
+            <button class="btn btn--ghost" id="btnRescan">🔄 Пересканировать</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Вкладка 2: Аудит -->
+      <section class="tab-content" id="tab-audit">
+        <div class="card">
+          <div class="field">
+            <label class="field__label">Аудит страницы</label>
+            <p class="field__hint" id="auditCurrentUrl">Текущая вкладка: загрузка...</p>
+            <button class="btn btn--primary btn--full" id="btnAuditCurrent">🔍 Анализировать текущую страницу</button>
+          </div>
+          <div class="divider"><span class="divider__text">или</span></div>
+          <div class="field">
+            <label class="field__label" for="auditManualUrl">URL для аудита</label>
+            <div class="field__row">
+              <input type="url" id="auditManualUrl" class="field__input" placeholder="https://...">
+              <button class="field__btn field__btn--primary" id="btnAuditManual">▶</button>
+            </div>
+          </div>
+          <div class="audit-results" id="auditResults" style="display:none;">
+            <div class="audit-block">
+              <div class="audit-block__header"><span class="audit-block__title">Title</span><span class="audit-block__badge" id="titleBadge"></span></div>
+              <p class="audit-block__value" id="titleValue"></p>
+              <div class="meter"><div class="meter__bar" id="titleMeter"></div></div>
+              <span class="meter__stats" id="titleStats"></span>
+              <p class="audit-block__tip" id="titleTip"></p>
+            </div>
+            <div class="audit-block">
+              <div class="audit-block__header"><span class="audit-block__title">Description</span><span class="audit-block__badge" id="descBadge"></span></div>
+              <p class="audit-block__value" id="descValue"></p>
+              <div class="meter"><div class="meter__bar" id="descMeter"></div></div>
+              <span class="meter__stats" id="descStats"></span>
+              <p class="audit-block__tip" id="descTip"></p>
+            </div>
+            <div class="audit-block">
+              <div class="audit-block__header"><span class="audit-block__title">H1</span><span class="audit-block__badge" id="h1Badge"></span></div>
+              <p class="audit-block__value" id="h1Value"></p>
+              <p class="audit-block__tip" id="h1Tip"></p>
+            </div>
+            <div class="audit-block">
+              <div class="audit-block__header"><span class="audit-block__title">Структура заголовков</span></div>
+              <div class="headings-structure" id="headingsStructure"></div>
+            </div>
+            <div class="audit-extras" id="auditExtras">
+              <span class="audit-extra" id="canonicalStatus"></span>
+              <span class="audit-extra" id="ogStatus"></span>
+              <span class="audit-extra" id="responseStatus"></span>
+            </div>
+            <div class="actions"><button class="btn btn--secondary" id="btnCopyAudit">📋 Копировать</button></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Вкладка 3: Анти-ПФ (проверка готовности сайта) -->
+      <section class="tab-content" id="tab-antipf">
+        <div class="card">
+          <h2>🔍 Проверка готовности сайта к ПФ</h2>
+          <p class="field__hint" style="margin-bottom:12px;">
+            Проверьте, готов ли ваш сайт к запуску поведенческих факторов: счётчики, технические файлы, защита
+          </p>
+          
+          <div class="input-group">
+            <input type="text" id="pf-domain-input" placeholder="Введите домен: example.com" class="form-input" autocomplete="off">
+            <button id="pf-scan-btn" class="btn btn--primary">🔍 Проверить</button>
+          </div>
+
+          <div class="progress" id="pf-progress" style="display:none;">
+            <div class="progress__info">
+              <span class="progress__text" id="pf-progress-text">Проверка...</span>
+              <span class="progress__count" id="pf-progress-count"></span>
+            </div>
+            <div class="progress__bar"><div class="progress__fill" id="pf-progress-fill" style="width:0%"></div></div>
+          </div>
+
+          <div id="pf-results" style="display:none;">
+            <div class="pf-section">
+              <h4>📊 Счётчики аналитики</h4>
+              <div id="pf-metrika" class="check-item"></div>
+              <div id="pf-ga" class="check-item"></div>
+              <div id="pf-metrika-code" class="code-block" style="display:none;">
+                <p style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">💡 Если счётчики не найдены — установите их. Это основа для отслеживания ПФ.</p>
+                <h4>Код Яндекс.Метрики:</h4>
+                <textarea readonly class="code-textarea" id="pf-metrika-code-text" rows="8"></textarea>
+                <button class="btn btn--secondary btn--sm" id="pf-copy-metrika-btn">📋 Копировать</button>
+              </div>
+            </div>
+
+            <div class="pf-section">
+              <h4>📁 Технические файлы</h4>
+              <div id="pf-robots" class="check-item"></div>
+              <div id="pf-sitemap" class="check-item"></div>
+              <div id="pf-ssl" class="check-item"></div>
+            </div>
+
+            <div class="pf-section">
+              <h4>🛡️ Базовая защита</h4>
+              <div id="pf-headers" class="check-item"></div>
+              <div id="pf-honeypot" class="check-item"></div>
+            </div>
+
+            <div class="pf-summary" id="pf-summary">
+              <h4>📋 Итог проверки</h4>
+              <div id="pf-summary-content"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Инструменты защиты -->
+        <div class="card">
+          <h2>🛠️ Инструменты защиты</h2>
+          <div class="tab-buttons">
+            <button class="tab-btn active" data-subtab="htaccess">.htaccess</button>
+            <button class="tab-btn" data-subtab="honeypot">Honeypot JS</button>
+            <button class="tab-btn" data-subtab="cloudflare">Cloudflare</button>
+          </div>
+          
+          <div class="subtab-content" id="subtab-htaccess">
+            <div class="options-group">
+              <label><input type="checkbox" id="ht-block-bots" checked> Блокировка ботов по User-Agent</label>
+              <label><input type="checkbox" id="ht-rate-limit" checked> Защита от частых запросов</label>
+              <label><input type="checkbox" id="ht-protect-admin" checked> Защита админки</label>
+            </div>
+            <button class="btn btn--primary" id="generate-htaccess-btn">Сгенерировать .htaccess</button>
+            <textarea readonly class="code-textarea" id="htaccess-code" style="display:none; margin-top:10px;" rows="12"></textarea>
+            <button class="btn btn--secondary btn--sm" id="copy-htaccess-btn" style="display:none;">📋 Копировать</button>
+          </div>
+          
+          <div class="subtab-content" id="subtab-honeypot" style="display:none;">
+            <p style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">Скрытая ссылка-ловушка. Боты кликают — вы видите их в Метрике и блокируете.</p>
+            <button class="btn btn--primary" id="generate-honeypot-btn">Сгенерировать код</button>
+            <textarea readonly class="code-textarea" id="honeypot-code" style="display:none; margin-top:10px;" rows="12"></textarea>
+            <div id="honeypot-info" style="display:none; margin-top:5px; color:var(--text-muted); font-size:11px;"></div>
+            <button class="btn btn--secondary btn--sm" id="copy-honeypot-btn" style="display:none;">📋 Копировать</button>
+          </div>
+          
+          <div class="subtab-content" id="subtab-cloudflare" style="display:none;">
+            <p style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">Правила для Cloudflare WAF. Блокируют ботов на уровне CDN.</p>
+            <button class="btn btn--primary" id="generate-cf-btn">Сгенерировать правила</button>
+            <textarea readonly class="code-textarea" id="cf-code" style="display:none; margin-top:10px;" rows="10"></textarea>
+            <div id="cf-info" style="display:none; margin-top:5px; color:var(--text-muted); font-size:11px;"></div>
+            <button class="btn btn--secondary btn--sm" id="copy-cf-btn" style="display:none;">📋 Копировать</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Вкладка 4: ПФ-Генератор -->
+      <section class="tab-content" id="tab-pfgenerator">
+        <div class="card">
+          <h2>📝 Генератор файла для ПФ</h2>
+          <p class="field__hint" style="margin-bottom:12px;">
+            Вставьте список запросов с частотами из WordStat, укажите гео и домен — получите готовый TXT файл для запуска ПФ
+          </p>
+
+          <div class="field">
+            <label class="field__label">Список запросов (запрос | частота)</label>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <span class="field__hint">Вставьте вручную или соберите в WordStat</span>
+              <button class="btn btn--secondary btn--sm" id="pf-load-wordstat-btn">
+                📥 Загрузить из WordStat
+              </button>
+            </div>
+            <textarea id="pf-queries-input" class="field__textarea" rows="10"
+              placeholder="плитка купить	486361
+тротуарная плитка	163411
+керамическая плитка	26455"></textarea>
+            <span class="field__hint" style="margin-top:4px;">
+              Формат: <strong>запрос</strong> TAB <strong>частота</strong>. Частота = показы в месяц по WordStat. Разделитель — табуляция или пробел.
+            </span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="field__label">Гео (lr)</label>
+              <input type="text" id="pf-geo-input" class="form-input" placeholder="213" value="213">
+              <span class="field__hint">lr=213 Москва, lr=2 Питер, lr=11119 Новосибирск</span>
+            </div>
+            <div class="form-group">
+              <label class="field__label">Домен (без https://)</label>
+              <input type="text" id="pf-target-domain" class="form-input" placeholder="example.com">
+            </div>
+          </div>
+
+          <div class="form-row" style="margin-top:8px;">
+            <div class="form-group">
+              <label class="field__label">Название файла</label>
+              <input type="text" id="pf-filename-input" class="form-input" placeholder="pf_queries" value="pf_queries">
+            </div>
+            <div class="form-group" style="justify-content:flex-end;">
+              <button class="btn btn--primary" id="pf-generate-txt-btn" style="margin-top:auto;">🔄 Сгенерировать TXT</button>
+            </div>
+          </div>
+
+          <div id="pf-txt-result" style="display:none;">
+            <div class="pf-section" style="margin-top:12px;">
+              <h4>📄 Предпросмотр (первые 10 строк):</h4>
+              <textarea readonly class="code-textarea" id="pf-txt-preview" rows="10"></textarea>
+              <div style="margin-top:8px; font-size:12px; color:var(--text-muted);">
+                Всего строк: <strong id="pf-txt-count">0</strong>
+              </div>
+            </div>
+            <div class="actions" style="margin-top:8px;">
+              <button class="btn btn--primary" id="pf-download-txt-btn">📥 Скачать TXT</button>
+              <button class="btn btn--secondary" id="pf-copy-txt-btn">📋 Копировать всё</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Статус-бар -->
+    <footer class="statusbar">
+      <span class="statusbar__status" id="statusText">🟢 Готов к работе</span>
+      <span class="statusbar__version">v2.3.0</span>
+    </footer>
+  </div>
+
+  <!-- Скрипты -->
+  <script src="../lib/xlsx.full.min.js"></script>
+  <script src="../utils/validators.js"></script>
+  <script src="../utils/excel.js"></script>
+  <script src="../utils/parser-engine.js"></script>
+  <script src="../utils/pf-detector.js"></script>
+  <script src="../utils/security-generator.js"></script>
+  <script src="components/progress-bar.js"></script>
+  <script src="components/table-view.js"></script>
+  <script src="components/warning-badge.js"></script>
+  <script src="tabs/parser.js"></script>
+  <script src="tabs/audit.js"></script>
+  <script src="tabs/antipf.js"></script>
+  <script src="tabs/pfgenerator.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

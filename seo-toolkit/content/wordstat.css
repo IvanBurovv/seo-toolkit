@@ -1,0 +1,33 @@
+/* content/wordstat.css */
+
+/* Кнопка добавления запроса */
+.seo-toolkit-add-btn {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+  user-select: none;
+}
+
+/* Показываем кнопку при наведении на строку */
+tr[role="row"]:hover .seo-toolkit-add-btn {
+  opacity: 0.7 !important;
+}
+
+/* Плавающий счётчик */
+.seo-toolkit-counter {
+  animation: seo-toolkit-slide-in 0.3s ease;
+}
+
+@keyframes seo-toolkit-slide-in {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.seo-toolkit-counter-text strong {
+  color: #4CAF50;
+  font-size: 16px;
+}
