@@ -44,7 +44,8 @@
 
 body {
   width: 520px;
-  min-height: 400px;
+  min-height: 600px;
+  max-height: 1000px; /* Было 600px — увеличили для баннера */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 13px;
   line-height: 1.5;
@@ -57,7 +58,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  max-height: 600px;
+  max-height: 700px; /* Было 600px */
 }
 
 /* ===== Header ===== */
@@ -1310,7 +1311,8 @@ body {
 /* ===== Banner ===== */
 .banner {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  height: auto;
+  max-height: 250px; /* Ограничиваем высоту */
   border-top: 1px solid var(--border);
   background: #0f0f1a;
   overflow: hidden;
